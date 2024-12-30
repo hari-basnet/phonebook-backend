@@ -76,6 +76,8 @@ app.post("/api/persons", (request, response) => {
     response.json(persons);
   });
 
+  console.log(persons);
+
   const nameExists = persons.find((person) => person.name === name);
 
   if (nameExists) {
@@ -94,7 +96,6 @@ app.post("/api/persons", (request, response) => {
     person.save().then((savedPerson) => {
       response.json(savedPerson);
       mongoose.connection.close();
-      return;
     });
   } catch (error) {
     console.log(error);
