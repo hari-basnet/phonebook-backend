@@ -69,22 +69,34 @@ app.post("/api/persons", (request, response) => {
     return response.status(404).send({ error: "Name or number missing!" });
   }
 
+  // get Persons
+  const persons = Person.find({}).then((persons) => {
+    console.log(persons);
+    response.json(persons);
+  });
+
   const nameExists = persons.find((person) => person.name === name);
 
   if (nameExists) {
     return response.status(403).send({ error: "name must be unique" });
   }
+
   const newContact = { name, number };
 
   // newContact.id = randomNumber().toString();
-  const updatedPersons = persons.concat(newContact);
+  // const updatedPersons = persons.concat(newContact);
 
-  const person = new Person({ ...updatedPersons });
+  const person = new Person({ ...newContact });
   //   response.status(201).send("Contact person created successfully!");
 
-  person.save().then((savedPerson) => {
-    return response.json(savedPerson);
-  });
+  try {
+    person.save().then((savedPerson) => {
+      return response.json(savedPerson);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
   // return response.status(201).send(updatedPersons);
 });
 
