@@ -59,10 +59,10 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 app.post("/api/persons", (request, response) => {
-  const randomNumber = () => {
-    const min = persons.length + 1;
-    return Math.floor(Math.random() * 1000) + min;
-  };
+  // const randomNumber = () => {
+  //   const min = persons.length + 1;
+  //   return Math.floor(Math.random() * 1000) + min;
+  // };
   const { name, number } = request.body;
 
   if (!name || (!number && name === "") || number === "") {
@@ -76,10 +76,16 @@ app.post("/api/persons", (request, response) => {
   }
   const newContact = { name, number };
 
-  newContact.id = randomNumber().toString();
+  // newContact.id = randomNumber().toString();
   const updatedPersons = persons.concat(newContact);
+
+  const person = new Person({ ...updatedPersons });
   //   response.status(201).send("Contact person created successfully!");
-  return response.status(201).send(updatedPersons);
+
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
+  // return response.status(201).send(updatedPersons);
 });
 
 app.delete("/api/persons/:id", (request, response) => {
