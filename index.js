@@ -83,7 +83,7 @@ app.post("/api/persons", (request, response) => {
   //   response.status(201).send("Contact person created successfully!");
 
   person.save().then((savedPerson) => {
-    response.json(savedPerson);
+    return response.json(savedPerson);
   });
   // return response.status(201).send(updatedPersons);
 });
