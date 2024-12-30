@@ -5,6 +5,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const Person = require("./models/person");
 const app = express();
+const PORT = process.env.PORT || 3001;
+
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cors());
@@ -38,10 +40,6 @@ const persons = [
   },
 ];
 
-// app.get("/", (request, response) => {
-//   response.send("<h1>Hello World!</h1>");
-// });
-
 app.get("/api/persons", (request, response) => {
   Person.find({}).then((persons) => {
     console.log(persons);
@@ -61,48 +59,16 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 app.post("/api/persons", (request, response) => {
-  // const randomNumber = () => {
-  //   const min = persons.length + 1;
-  //   return Math.floor(Math.random() * 1000) + min;
-  // };
   const { name, number } = request.body;
 
-  if (!name || (!number && name === "") || number === "") {
-    return response.status(404).send({ error: "Name or number missing!" });
-  }
-
-  // get Persons
-  const persons = Person.find({}).then((persons) => {
-    console.log(persons);
-    response.json(persons);
+  const person = new Person({
+    name: name,
+    number: number,
   });
 
-  console.log(persons);
-
-  const nameExists = persons.find((person) => person.name === name);
-
-  if (nameExists) {
-    return response.status(403).send({ error: "name must be unique" });
-  }
-
-  const newContact = { name, number };
-
-  // newContact.id = randomNumber().toString();
-  // const updatedPersons = persons.concat(newContact);
-
-  const person = new Person({ ...newContact });
-  //   response.status(201).send("Contact person created successfully!");
-
-  try {
-    person.save().then((savedPerson) => {
-      response.json(savedPerson);
-      mongoose.connection.close();
-    });
-  } catch (error) {
-    console.log(error);
-  }
-
-  // return response.status(201).send(updatedPersons);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -120,7 +86,6 @@ app.get("/info", (request, response) => {
   );
 });
 
-const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log("App listening in port", PORT);
 });
