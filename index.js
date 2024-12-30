@@ -2,7 +2,6 @@ require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const Person = require("./models/person");
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -42,9 +41,7 @@ const persons = [
 
 app.get("/api/persons", (request, response) => {
   Person.find({}).then((persons) => {
-    console.log(persons);
     response.json(persons);
-    mongoose.connection.close();
   });
 });
 
