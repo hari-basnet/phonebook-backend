@@ -45,6 +45,7 @@ app.get("/api/persons", (request, response) => {
   Person.find({}).then((persons) => {
     console.log(persons);
     response.json(persons);
+    mongoose.connection.close();
   });
 });
 
@@ -91,7 +92,9 @@ app.post("/api/persons", (request, response) => {
 
   try {
     person.save().then((savedPerson) => {
-      return response.json(savedPerson);
+      response.json(savedPerson);
+      mongoose.connection.close();
+      return;
     });
   } catch (error) {
     console.log(error);
